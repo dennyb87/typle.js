@@ -1,2 +1,2 @@
-# typles
+# Typles
 Jquery plugin for memorable titles
