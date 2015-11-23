@@ -1,0 +1,55 @@
+/******** Main CSS ********/
+
+html{
+    font-size: 100%;
+}
+
+body{
+    font-family: 'Roboto', sans-serif;
+    font-size: 3em;
+    overflow-x: hidden;
+}
+
+h1{
+    font-weight: 400;
+    color: #9E9E9E;
+    padding: 100px 0 0px 0;
+    text-align: left;
+}
+
+.wrapper{
+    float: left;
+    position: relative;
+    left: 50%;
+}
+
+.inner{
+    float: left;
+    position: relative;
+    left: -50%;
+}
+
+.highlight{
+    color: #212121;
+}
+
+.subtitle{
+    display: none;
+    font-size: .2em;
+}
+
+@media (max-width: 1024px) {
+    body{
+        font-size: 2em;
+    }
+}
+
+@media (max-width: 640px) {
+    body{
+        font-size: 1em;
+    }
+}
+
+
+
+
