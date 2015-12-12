@@ -1,18 +1,18 @@
 /******** Typles CSS ********/
 
-.typles{
+.typle{
     position: relative;
 }
 
-.typles, .typles *{
+.typle, .typle *{
     visibility: hidden; /* set visible if javascript is disabled */
 }
 
-.typles-show{
+.typle-show{
     visibility: visible;
 }
 
-.typles-cursor{
+.typle-cursor{
     position: absolute;
     left: 0px;
 }

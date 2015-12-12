@@ -4,14 +4,14 @@
 <head>
     <meta charset="utf-8">
     <title>Jquery Typles</title>
-    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="example.css">
-    <link rel="stylesheet" href="typles.css">
+    <link rel="stylesheet" href="typle.css">
 
     <!-- Gracefull Degradation -->
     <noscript>
         <style>
-            .typles, .typles *{
+            .typle, .typle *{
                 visibility: visible;
             }
         </style>
@@ -23,10 +23,9 @@
 
         <div class="wrapper">
             <div class="inner">
-                <span class="typles">
-                    Jquery<span class="highlight">Typles</span><noscript>_</noscript>
+                <span class="typle">
+                    typle<span class="highlight">.js</span><noscript>_</noscript>
                 </span>
-                <p class="subtitle">for memorable titles.</p>
             </div>
 
         </div>
@@ -34,24 +33,19 @@
     </h1>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="typles.js"></script>
+    <script src="typle.js"></script>
     <script>
         $(window).load(function(){
 
-            var elem = $('.typles').typles({
+            var elem = $('.typle').typle({
                 loopCount: 0,
                 showCursor: true,
                 cursorBlink: true,
-                onStringTyped: function(){
-                    $('.subtitle').show();
-                },
-                onStringDeleted: function(){
-                    $('.subtitle').hide();
-                },
+                cursorChar: '_',
             });
 
             // get Typles Object from elem if you need it
-            var obj = elem.data('typles');
+            var obj = elem.data('typle');
         });
     </script>
 </body>

@@ -5,14 +5,14 @@ html{
 }
 
 body{
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Lobster', sans-serif;
     font-size: 3em;
     overflow-x: hidden;
 }
 
 h1{
     font-weight: 400;
-    color: #9E9E9E;
+    color: #212121;
     padding: 100px 0 0px 0;
     text-align: left;
 }
@@ -30,12 +30,7 @@ h1{
 }
 
 .highlight{
-    color: #212121;
-}
-
-.subtitle{
-    display: none;
-    font-size: .2em;
+    color: #9E9E9E;
 }
 
 @media (max-width: 1024px) {

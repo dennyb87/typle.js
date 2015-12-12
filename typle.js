@@ -1,11 +1,11 @@
 (function($){
 
-    var Typles = function(elem, options) {
+    var Typle = function(elem, options) {
 
         // element
         this.el = elem;
         // options
-        this.options = $.extend({}, $.fn.typles.defaults, options);
+        this.options = $.extend({}, $.fn.typle.defaults, options);
 
         // typing speed
         this.typeSpeed = this.options.typeSpeed;
@@ -35,9 +35,9 @@
         this.cursor = null;
 
         // cursor class
-        this.cursorClass = 'typles-cursor';
+        this.cursorClass = 'typle-cursor';
         // class for visible elements
-        this.showClass = 'typles-show';
+        this.showClass = 'typle-show';
 
         // characters references
         this.characters = [];
@@ -54,9 +54,9 @@
         this.setup();
     };
 
-    Typles.prototype = {
+    Typle.prototype = {
 
-        constructor: Typles,
+        constructor: Typle,
 
         typewrite: function() {
 
@@ -269,24 +269,24 @@
         },
     };
 
-    $.fn.typles = function(options) {
+    $.fn.typle = function(options) {
 
         return this.each(function() {
 
             var elem = $(this),
-                instance = elem.data('typles');
+                instance = elem.data('typle');
             // Return if this element already has a plugin instance
             if (instance){
                 return;
             }
             // pass options to plugin constructor
-            var typles = new Typles(this, options);
+            var typle = new Typle(this, options);
             // Store plugin object in this element's data
-            elem.data('typles', typles);
+            elem.data('typle', typle);
         });
     };
 
-    $.fn.typles.defaults = {
+    $.fn.typle.defaults = {
         // typing speed
         typeSpeed: 20,
         // delay before start typing
