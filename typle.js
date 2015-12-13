@@ -1,11 +1,16 @@
-(function($){
+(function ($) {
 
-    var Typle = function(elem, options) {
+    'use strict';
+
+    var Typle = function (elem, options) {
 
         // element
         this.el = elem;
         // options
         this.options = $.extend({}, $.fn.typle.defaults, options);
+
+        // carousel
+        this.carousel = this.options.carousel;
 
         // typing speed
         this.typeSpeed = this.options.typeSpeed;
@@ -58,7 +63,7 @@
 
         constructor: Typle,
 
-        typewrite: function() {
+        typewrite: function () {
 
             var self = this,
                 // get current char
@@ -70,42 +75,42 @@
                 // percent to get responsiveness
                 idx = this.charPos + 1,
                 step = this.charsWidths.slice(0, idx),
-		        distance = this.sumArray(step),
-		        percent = (distance / this.elemWidth) * 100;
+                distance = this.sumArray(step),
+                percent = (distance / this.elemWidth) * 100;
 
             // stop cursor blink on typing
-		    this.stopBlink();
+            this.stopBlink();
 
-            self.timeout = setTimeout(function() {
+            self.timeout = setTimeout(function () {
 
-		        $(char).toggleClass(self.showClass);
-		        $(self.cursor).css({'left' : percent+'%'});
+                $(char).toggleClass(self.showClass);
+                $(self.cursor).css({'left': percent + '%'});
 
-		        if (lastChar){
-		            // custom callback call
-		            self.options.onStringTyped();
-		            // start cursor blink on string typed
-		            self.startBlink();
+                if (lastChar) {
+                    // custom callback call
+                    self.options.onStringTyped();
+                    // start cursor blink on string typed
+                    self.startBlink();
 
-		            self.curLoop++;
-		            // check if is the last iteration
-		            var endLoop = self.curLoop === self.loopCount;
-		            // return if loop is not inifite and loop is ended
+                    self.curLoop++;
+                    // check if is the last iteration
+                    var endLoop = self.curLoop === self.loopCount;
+                    // return if loop is not inifite and loop is ended
                     if (!self.infiniteLoop && endLoop) {
                         return;
                     }
-                    return setTimeout(function() {
+                    return setTimeout(function () {
                         self.backspace();
                     }, self.backDelay);
-		        }
+                }
 
-		        self.charPos++;
-		        return self.typewrite();
+                self.charPos++;
+                return self.typewrite();
 
             }, self.humanDelay(self.options.typeSpeed));
         },
 
-        backspace: function(){
+        backspace: function () {
 
             var self = this,
                 // get current char
@@ -117,42 +122,51 @@
                 // percent to get responsiveness
                 idx = this.charPos,
                 step = this.charsWidths.slice(0, idx),
-		        distance = this.sumArray(step),
-		        percent = (distance / this.elemWidth) * 100;
+                distance = this.sumArray(step),
+                percent = (distance / this.elemWidth) * 100;
 
-		    // stop cursor blink on backspacing
-		    this.stopBlink();
+            // stop cursor blink on backspacing
+            this.stopBlink();
 
-            self.timeout = setTimeout(function() {
+            self.timeout = setTimeout(function () {
 
-		        $(char).toggleClass(self.showClass);
-		        $(self.cursor).css({'left' : percent+'%'});
+                $(char).toggleClass(self.showClass);
+                $(self.cursor).css({'left': percent + '%'});
 
-		        if (lastChar){
-		            // custom callback call
-		            self.options.onStringDeleted();
-		            // start cursor blink on string deleted
-		            self.startBlink();
-                    return setTimeout(function() {
+                if (lastChar) {
+                    // custom callback call
+                    self.options.onStringDeleted();
+                    // reinitialize if elements in carousel
+                    if (self.carousel.length !== 0) {
+                        return self.setup();
+                    }
+                    // start cursor blink on string deleted
+                    self.startBlink();
+                    return setTimeout(function () {
                         self.typewrite();
                     }, self.startDelay);
-		        }
+                }
 
-		        self.charPos--;
-		        return self.backspace();
+                self.charPos--;
+                return self.backspace();
 
             }, self.humanDelay(self.options.backSpeed));
         },
 
-        run: function() {
+        run: function () {
             // run the plugin!!!
             var self = this;
-            self.timeout = setTimeout(function() {
+            self.timeout = setTimeout(function () {
                 self.typewrite();
             }, self.startDelay);
         },
 
-        setup: function() {
+        setup: function () {
+
+            if (this.carousel.length !== 0) {
+                $(this.el).html(this.carousel[0]);
+                this.rotateArray(this.carousel);
+            }
             // parse the element and replace every character
             // with a wrapped character
             // and store characters references
@@ -170,29 +184,36 @@
             this.run();
         },
 
-        sumArray: function(arr) {
-            // initial value 0 permit to return 0 for empty array
-            return arr.reduce(
-                function(a, b){
-                    return a + b;
-            }, 0);
+        rotateArray: function (arr) {
+            arr.push(arr.shift());
         },
 
-        humanDelay: function(speed) {
+        sumArray: function (arr) {
+            // sum each value in array
+            var total = 0,
+                len = arr.length,
+                i = 0;
+            for(i; i < len; i++){
+                total += arr[i];
+            }
+            return total;
+        },
+
+        humanDelay: function (speed) {
             // simulate delay of human typing
             return Math.round(Math.random() * 70) + speed;
         },
 
-        getCharWidths: function(){
+        getCharWidths: function () {
             // get characters widths
             var charsWidths = [];
-            $.each(this.characters, function(i, chr){
+            $.each(this.characters, function (i, chr) {
                 charsWidths.push($(chr).width());
             });
             return charsWidths;
         },
 
-        cursorInit: function() {
+        cursorInit: function () {
             // create cursor and append it to the element
             var self = this,
                 cursor = this.wrapChar(this.cursorChar);
@@ -200,7 +221,7 @@
             if (this.showCursor) {
                 self.startBlink();
                 cursor.addClass(this.showClass);
-            };
+            }
 
             cursor.addClass(this.cursorClass);
             $(this.el).append(cursor);
@@ -208,75 +229,81 @@
             return cursor;
         },
 
-        startBlink: function(){
-            if (!this.cursorBlink || !this.showCursor){ return; };
+        startBlink: function () {
+            if (!this.cursorBlink || !this.showCursor) {
+                return;
+            }
             var self = this;
-            self.blink = setInterval(function() {
+            self.blink = setInterval(function () {
                 self.cursor.toggleClass(self.showClass);
             }, self.blinkSpeed);
         },
 
-        stopBlink: function(){
-            if (!this.cursorBlink || !this.showCursor){ return; };
+        stopBlink: function () {
+            if (!this.cursorBlink || !this.showCursor) {
+                return;
+            }
             clearInterval(this.blink);
             this.cursor.addClass(this.showClass);
         },
 
-        wrapChar: function(chr) {
+        wrapChar: function (chr) {
             // wrap character in a span element
             return $('<span>').text(chr);
         },
 
-        charToSpan: function(node) {
+        charToSpan: function (node) {
             // it put each character of the text node in a span element
             // return a list of span elements
             // with one sigle character each
-		    var self = this,
-		        text = $(node).text().trim().split(''),
-		        wrappedchars = [];
-		    $.each(text, function(i, chr){
-		        var wrapper = self.wrapChar(chr)
-		        wrappedchars.push(wrapper);
-		    })
+            var self = this,
+                text = $.trim($(node).text()).split(''), // $(node).text().trim().split('') trim not working in IE
+                wrappedchars = [];
+            $.each(text, function (i, chr) {
+                var wrapper = self.wrapChar(chr);
+                wrappedchars.push(wrapper);
+            });
 
             // replace text node with span elements
             $(node).replaceWith(wrappedchars);
 
-		    return wrappedchars;
+            return wrappedchars;
         },
 
-        parse: function(elem) {
+        parse: function (elem) {
             // it's a recursive method and it traverse all children
             // in search for text nodes, it return a list of span
             // elements with one single character each
             var self = this,
                 nodes = $(elem).contents(),
-                characters = [];
+                characters = [],
+                ELEMENT_NODE = 1,
+                TEXT_NODE = 3;
 
-		    $.each(nodes, function(i, node){
-                var isElementNode = node.nodeType === Node.ELEMENT_NODE,
-		            isTextNode = node.nodeType === Node.TEXT_NODE,
-		            wrappedchars = [];
-		        if (isElementNode){
-		            wrappedchars = self.parse(node);
-		        } else if (isTextNode){
-		            wrappedchars = self.charToSpan(node);
-		        }
-		        characters = characters.concat(wrappedchars);
-		    });
+            $.each(nodes, function (i, node) {
+                var isElementNode = node.nodeType === ELEMENT_NODE,
+                    isTextNode = node.nodeType === TEXT_NODE,
+                    wrappedchars = [];
+                if (isElementNode) {
+                    wrappedchars = self.parse(node);
+                } else if (isTextNode) {
+                    wrappedchars = self.charToSpan(node);
+                }
+                characters = characters.concat(wrappedchars);
+            });
 
-		    return characters;
-        },
+            return characters;
+        }
     };
 
-    $.fn.typle = function(options) {
+    $.fn.typle = function (options) {
 
-        return this.each(function() {
+        return this.each(function () {
 
             var elem = $(this),
                 instance = elem.data('typle');
             // Return if this element already has a plugin instance
-            if (instance){
+            if (instance) {
                 return;
             }
             // pass options to plugin constructor
@@ -305,10 +332,12 @@
         cursorBlink: true,
         // cursor blink speed
         blinkSpeed: 300,
+        // carousel
+        carousel: [],
         // callback when string is typed
-        onStringTyped: function() {},
+        onStringTyped: function () {},
         // callback when string is deleted
-        onStringDeleted: function() {}
+        onStringDeleted: function () {}
     };
 
 })(jQuery);
